@@ -1,0 +1,59 @@
+<!-- templates/admin_panel/loans.html -->
+{% extends "base.html" %}
+
+{% block title %}Loan Requests | SecureBank Admin{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">All Loan Requests</h1>
+
+    {% if loans %}
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded-xl shadow-sm border border-gray-200">
+          <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+            <tr>
+              <th class="px-6 py-4">Loan ID</th>
+              <th class="px-6 py-4">User</th>
+              <th class="px-6 py-4">Amount</th>
+              <th class="px-6 py-4">Status</th>
+              <th class="px-6 py-4">Date</th>
+              <th class="px-6 py-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm text-gray-800 divide-y divide-gray-100">
+            {% for loan in loans %}
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4">#{{ loan.id }}</td>
+                <td class="px-6 py-4">{{ loan.user.get_full_name }}</td>
+                <td class="px-6 py-4">${{ loan.amount }}</td>
+                <td class="px-6 py-4">
+                  <span class="
+                    px-2 py-1 rounded-full text-xs font-semibold 
+                    {% if loan.status == 'Approved' %}bg-green-100 text-green-700
+                    {% elif loan.status == 'Rejected' %}bg-red-100 text-red-700
+                    {% else %}bg-yellow-100 text-yellow-700{% endif %}
+                  ">
+                    {{ loan.status }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">{{ loan.created_at|date:"M d, Y" }}</td>
+                <td class="px-6 py-4 space-x-2">
+                  {% if loan.status == "Pending" %}
+                    <a href="{% url 'approve_loan' loan.id %}" class="text-green-600 hover:underline text-sm font-medium">Approve</a>
+                    <a href="{% url 'reject_loan' loan.id %}" class="text-red-600 hover:underline text-sm font-medium">Reject</a>
+                  {% else %}
+                    <span class="text-gray-500 text-sm">—</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-center text-gray-600 mt-12">No loan requests available.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureBank - Banking Solutions</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#1e40af',
+          secondary: '#3b82f6'
+        },
+        borderRadius: {
+          'none': '0px',
+          'sm': '4px',
+          DEFAULT: '8px',
+          'md': '12px',
+          'lg': '16px',
+          'xl': '20px',
+          '2xl': '24px',
+          '3xl': '32px',
+          'full': '9999px',
+          'button': '8px'
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<style>
+  :where([class^="ri-"])::before { content: "\f3c2"; }
+  
+  .hero-bg {
+    background-image: url('https://readdy.ai/api/search-image?query=Modern%20banking%20building%20with%20glass%20facade%20and%20professional%20atmosphere%2C%20clean%20corporate%20environment%20with%20blue%20and%20white%20color%20scheme%2C%20financial%20district%20skyline%2C%20professional%20lighting%2C%20minimalist%20architecture%2C%20contemporary%20design&width=1920&height=1080&seq=hero-banking&orientation=landscape');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  /* Alignment fixes */
+  .container {
+    max-width: 1280px;
+  }
+  
+  .service-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Ensure consistent spacing */
+  section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Modal alignment fixes */
+  .modal-content {
+    width: 100%;
+    max-width: 28rem;
+  }
+  
+  /* Footer alignment */
+  .footer-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+</style>
+</head>
+<body class="bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-100">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-4">
+          <div class="font-['Pacifico'] text-2xl text-primary">SecureBank</div>
+        </div>
+        <nav class="hidden md:flex space-x-8">
+          <a href="#" class="text-gray-700 hover:text-primary font-medium">Home</a>
+          <a href="#" class="text-gray-700 hover:text-primary font-medium">Services</a>
+          <a href="#" class="text-gray-700 hover:text-primary font-medium">Loans</a>
+          <a href="#" class="text-gray-700 hover:text-primary font-medium">About</a>
+          <a href="#" class="text-gray-700 hover:text-primary font-medium">Contact</a>
+        </nav>
+        <div class="flex items-center space-x-4">
+          <button class="bg-primary text-white px-6 py-2 !rounded-button font-medium hover:bg-blue-700 whitespace-nowrap" onclick="showLoginModal()">
+            Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+<section class="hero-bg relative min-h-screen flex items-center">
+<div class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent"></div>
+<div class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="max-w-2xl">
+<h1 class="text-5xl font-bold text-gray-900 leading-tight mb-6">
+Your Trusted Banking Partner for Life
+</h1>
+<p class="text-xl text-gray-700 mb-8 leading-relaxed">
+Experience secure, convenient, and personalized banking services. From personal loans to business solutions, we're here to help you achieve your financial goals.
+</p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="bg-primary text-white px-8 py-4 !rounded-button font-semibold text-lg hover:bg-blue-700 whitespace-nowrap" onclick="showLoginModal()">
+Get Started Today
+</button>
+<button class="border-2 border-primary text-primary px-8 py-4 !rounded-button font-semibold text-lg hover:bg-primary hover:text-white whitespace-nowrap">
+Learn More
+</button>
+</div>
+</div>
+</div>
+</section>
+
+    <!-- Services Section -->
+    <section class="py-20 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Our Banking Services</h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">Comprehensive financial solutions designed to meet your personal and business needs</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="service-card bg-gray-50 rounded-xl p-8 hover:shadow-lg transition-shadow">
+            <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+              <i class="ri-bank-card-line text-2xl text-primary"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Personal Banking</h3>
+            <p class="text-gray-600 mb-6">Manage your everyday finances with our comprehensive personal banking solutions including checking, savings, and investment accounts.</p>
+            <ul class="space-y-2 text-gray-600">
+              <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i>Free checking accounts</li>
+              <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i>High-yield savings</li>
+              <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i>Mobile banking app</li>
+            </ul>
+          </div>
+          <div class="service-card bg-gray-50 rounded-xl p-8 hover:shadow-lg transition-shadow">
+            <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+              <i class="ri-home-line text-2xl text-primary"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Loan Services</h3>
+            <p class="text-gray-600 mb-6">Get the financing you need with competitive rates and flexible terms for personal, auto, and home loans.</p>
+            <ul class="space-y-2 text-gray-600">
+              <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i>Personal loans</li>
+              <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i>Auto financing</li>
+              <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i>Home mortgages</li>
+            </ul>
+          </div>
+          <div class="service-card bg-gray-50 rounded-xl p-8 hover:shadow-lg transition-shadow">
+            <div class="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+              <i class="ri-building-line text-2xl text-primary"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Business Banking</h3>
+            <p class="text-gray-600 mb-6">Grow your business with our tailored commercial banking solutions, from business accounts to commercial loans.</p>
+            <ul class="space-y-2 text-gray-600">
+              <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i>Business accounts</li>
+              <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i>Commercial loans</li>
+              <li class="flex items-center"><i class="ri-check-line text-green-500 mr-2"></i>Merchant services</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-gray-50">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Why Choose SecureBank?</h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">We're committed to providing exceptional banking experiences with cutting-edge technology and personalized service</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="text-center">
+            <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="ri-shield-check-line text-3xl text-primary"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Bank-Level Security</h3>
+            <p class="text-gray-600">Advanced encryption and multi-factor authentication protect your accounts 24/7</p>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="ri-smartphone-line text-3xl text-primary"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Mobile First</h3>
+            <p class="text-gray-600">Manage your finances anywhere with our award-winning mobile banking app</p>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="ri-customer-service-2-line text-3xl text-primary"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">24/7 Support</h3>
+            <p class="text-gray-600">Get help when you need it with our round-the-clock customer support team</p>
+          </div>
+          <div class="text-center">
+            <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="ri-money-dollar-circle-line text-3xl text-primary"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Competitive Rates</h3>
+            <p class="text-gray-600">Enjoy some of the best rates in the industry on loans and savings accounts</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-primary text-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-4xl font-bold mb-4">Ready to Get Started?</h2>
+        <p class="text-xl mb-8 max-w-2xl mx-auto">Join thousands of satisfied customers who trust SecureBank for their financial needs</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button class="bg-white text-primary px-8 py-4 !rounded-button font-semibold text-lg hover:bg-gray-100 whitespace-nowrap" onclick="showLoginModal()">
+            Open Account Today
+          </button>
+          <button class="border-2 border-white text-white px-8 py-4 !rounded-button font-semibold text-lg hover:bg-white hover:text-primary whitespace-nowrap">
+            Schedule Consultation
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-16">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid footer-grid gap-8">
+        <div>
+          <div class="font-['Pacifico'] text-2xl mb-4">SecureBank</div>
+          <p class="text-gray-400 mb-4">Your trusted financial partner providing secure and innovative banking solutions since 1985.</p>
+          <div class="flex space-x-4">
+            <div class="w-8 h-8 flex items-center justify-center"><i class="ri-facebook-fill text-xl"></i></div>
+            <div class="w-8 h-8 flex items-center justify-center"><i class="ri-twitter-fill text-xl"></i></div>
+            <div class="w-8 h-8 flex items-center justify-center"><i class="ri-linkedin-fill text-xl"></i></div>
+            <div class="w-8 h-8 flex items-center justify-center"><i class="ri-instagram-fill text-xl"></i></div>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Services</h3>
+          <ul class="space-y-2 text-gray-400">
+            <li><a href="#" class="hover:text-white">Personal Banking</a></li>
+            <li><a href="#" class="hover:text-white">Business Banking</a></li>
+            <li><a href="#" class="hover:text-white">Loans & Mortgages</a></li>
+            <li><a href="#" class="hover:text-white">Investment Services</a></li>
+            <li><a href="#" class="hover:text-white">Insurance</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Support</h3>
+          <ul class="space-y-2 text-gray-400">
+            <li><a href="#" class="hover:text-white">Help Center</a></li>
+            <li><a href="#" class="hover:text-white">Contact Us</a></li>
+            <li><a href="#" class="hover:text-white">Branch Locator</a></li>
+            <li><a href="#" class="hover:text-white">Security Center</a></li>
+            <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+          <div class="space-y-3 text-gray-400">
+            <div class="flex items-center">
+              <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-phone-line"></i></div>
+              <span>1-800-SECURE-1</span>
+            </div>
+            <div class="flex items-center">
+              <div class="w-5 h-5 flex items-center justify-center mr-3"><i class="ri-mail-line"></i></div>
+              <span>support@securebank.com</span>
+            </div>
+            <div class="flex items-start">
+              <div class="w-5 h-5 flex items-center justify-center mr-3 mt-1"><i class="ri-map-pin-line"></i></div>
+              <span>123 Financial District<br>New York, NY 10004</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-400">&copy; 2025 SecureBank. All rights reserved.</p>
+        <div class="flex items-center space-x-6 mt-4 md:mt-0">
+          <div class="w-8 h-8 flex items-center justify-center"><i class="ri-visa-fill text-2xl"></i></div>
+          <div class="w-8 h-8 flex items-center justify-center"><i class="ri-mastercard-fill text-2xl"></i></div>
+          <div class="w-8 h-8 flex items-center justify-center"><i class="ri-paypal-fill text-2xl"></i></div>
+          <span class="text-gray-400 text-sm">FDIC Insured</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+<!-- Login Modal -->
+<div id="loginModal" class="fixed inset-0 bg-black/50 hidden z-50 flex items-center justify-center p-4">
+  <div class="modal-content bg-white rounded-xl w-full p-8">
+    <div class="text-center mb-8">
+      <div class="font-['Pacifico'] text-3xl text-primary mb-2">SecureBank</div>
+      <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
+      {% if error %}
+        <div class="text-red-500 mb-4">{{ error }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Login Type Tabs -->
+    <div class="flex justify-center mb-6 space-x-4">
+      <button type="button"
+         id="userTab"
+         class="user-tab bg-primary text-white px-4 py-2 rounded-lg cursor-pointer"
+         onclick="showUserLogin()">
+        User Login
+      </button>
+      <button type="button"
+         id="adminTab"
+         class="admin-tab text-primary px-4 py-2 rounded-lg cursor-pointer"
+         onclick="showAdminLogin()">
+        Admin Login
+      </button>
+    </div>
+
+    <!-- Login Form -->
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <div class="space-y-4">
+        <div id="userFields">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <input type="text" name="username" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your username" required>
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <input type="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Enter your password" required>
+        </div>
+        
+        <button type="submit" class="w-full bg-primary text-white py-3 rounded-button font-semibold hover:bg-blue-700">
+          Sign In
+        </button>
+      </div>
+    </form>
+
+    <div class="mt-6 flex flex-col items-center space-y-3 text-sm text-center">
+      <div id="forgotPasswordLink">
+        <a href="#" class="text-primary hover:underline">Forgot password?</a>
+      </div>
+      <div id="registerLink" class="text-gray-500">
+        Not registered? <a href="{% url 'register' %}" class="text-primary hover:underline">Create an account</a>
+      </div>
+    </div>
+
+    <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600" onclick="closeLoginModal()">
+      <div class="w-6 h-6 flex items-center justify-center"><i class="ri-close-line text-xl"></i></div>
+    </button>
+  </div>
+</div>
+
+
+
+  <script>
+    // Modal controls
+    function showLoginModal() {
+      document.getElementById('loginModal').classList.remove('hidden');
+      showLoginTypeSelection();
+    }
+    
+    function closeLoginModal() {
+      document.getElementById('loginModal').classList.add('hidden');
+    }
+    
+    function showLoginTypeSelection() {
+      document.getElementById('loginTypeSelection').classList.remove('hidden');
+      document.getElementById('userLoginForm').classList.add('hidden');
+      document.getElementById('adminLoginForm').classList.add('hidden');
+    }
+    
+    function showUserLogin() {
+      document.querySelector('.user-tab').classList.add('bg-primary', 'text-white');
+      document.querySelector('.user-tab').classList.remove('text-primary');
+      document.querySelector('.admin-tab').classList.remove('bg-primary', 'text-white');
+      document.querySelector('.admin-tab').classList.add('text-primary');
+      document.getElementById('registerLink').classList.remove('hidden');
+    }
+
+    function showAdminLogin() {
+      document.querySelector('.admin-tab').classList.add('bg-primary', 'text-white');
+      document.querySelector('.admin-tab').classList.remove('text-primary');
+      document.querySelector('.user-tab').classList.remove('bg-primary', 'text-white');
+      document.querySelector('.user-tab').classList.add('text-primary');
+      document.getElementById('registerLink').classList.add('hidden');
+    }
+
+
+
+    
+    // Authentication
+    function loginUser(event) {
+      event.preventDefault();
+      closeLoginModal();
+      document.getElementById('userDashboard').classList.remove('hidden');
+      showDashboardOverview();
+    }
+    
+    function loginAdmin(event) {
+      event.preventDefault();
+      closeLoginModal();
+      document.getElementById('adminDashboard').classList.remove('hidden');
+      showAdminOverview();
+    }
+    
+    function logoutUser() {
+      document.getElementById('userDashboard').classList.add('hidden');
+    }
+    
+    function logoutAdmin() {
+      document.getElementById('adminDashboard').classList.add('hidden');
+    }
+    
+    // User dashboard
+    function showDashboardOverview() {
+      document.getElementById('dashboardOverview').classList.remove('hidden');
+      document.getElementById('loanApplicationsView').classList.add('hidden');
+      document.getElementById('loanApplicationForm').classList.add('hidden');
+      updateUserNavigation('dashboard');
+    }
+    
+    function showLoanApplications() {
+      document.getElementById('dashboardOverview').classList.add('hidden');
+      document.getElementById('loanApplicationsView').classList.remove('hidden');
+      document.getElementById('loanApplicationForm').classList.add('hidden');
+      updateUserNavigation('loans');
+    }
+    
+    function showLoanApplication() {
+      document.getElementById('dashboardOverview').classList.add('hidden');
+      document.getElementById('loanApplicationsView').classList.add('hidden');
+      document.getElementById('loanApplicationForm').classList.remove('hidden');
+    }
+    
+    function updateUserNavigation(active) {
+      const navLinks = document.querySelectorAll('#userDashboard nav a');
+      navLinks.forEach(link => {
+        link.classList.remove('bg-primary', 'text-white');
+        link.classList.add('text-gray-300', 'hover:bg-gray-800');
+      });
+      if (active === 'dashboard') {
+        navLinks[0].classList.add('bg-primary', 'text-white');
+        navLinks[0].classList.remove('text-gray-300', 'hover:bg-gray-800');
+      } else if (active === 'loans') {
+        navLinks[1].classList.add('bg-primary', 'text-white');
+        navLinks[1].classList.remove('text-gray-300', 'hover:bg-gray-800');
+      }
+    }
+    
+    // Admin dashboard
+    function showAdminOverview() {
+      document.getElementById('adminOverview').classList.remove('hidden');
+      document.getElementById('userManagementView').classList.add('hidden');
+      document.getElementById('loanManagementView').classList.add('hidden');
+      document.getElementById('loanDetailsView').classList.add('hidden');
+      updateAdminNavigation('dashboard');
+    }
+    
+    function showUserManagement() {
+      document.getElementById('adminOverview').classList.add('hidden');
+      document.getElementById('userManagementView').classList.remove('hidden');
+      document.getElementById('loanManagementView').classList.add('hidden');
+      document.getElementById('loanDetailsView').classList.add('hidden');
+      updateAdminNavigation('users');
+    }
+    
+    function showLoanManagement() {
+      document.getElementById('adminOverview').classList.add('hidden');
+      document.getElementById('userManagementView').classList.add('hidden');
+      document.getElementById('loanManagementView').classList.remove('hidden');
+      document.getElementById('loanDetailsView').classList.add('hidden');
+      updateAdminNavigation('loans');
+    }
+    
+    function showLoanDetails() {
+      document.getElementById('adminOverview').classList.add('hidden');
+      document.getElementById('userManagementView').classList.add('hidden');
+      document.getElementById('loanManagementView').classList.add('hidden');
+      document.getElementById('loanDetailsView').classList.remove('hidden');
+    }
+    
+    function updateAdminNavigation(active) {
+      const navLinks = document.querySelectorAll('#adminDashboard nav a');
+      navLinks.forEach(link => {
+        link.classList.remove('bg-primary', 'text-white');
+        link.classList.add('text-gray-300', 'hover:bg-gray-800');
+      });
+      if (active === 'dashboard') {
+        navLinks[0].classList.add('bg-primary', 'text-white');
+        navLinks[0].classList.remove('text-gray-300', 'hover:bg-gray-800');
+      } else if (active === 'users') {
+        navLinks[1].classList.add('bg-primary', 'text-white');
+        navLinks[1].classList.remove('text-gray-300', 'hover:bg-gray-800');
+      } else if (active === 'loans') {
+        navLinks[2].classList.add('bg-primary', 'text-white');
+        navLinks[2].classList.remove('text-gray-300', 'hover:bg-gray-800');
+      } else if (active === 'approved') {
+        navLinks[3].classList.add('bg-primary', 'text-white');
+        navLinks[3].classList.remove('text-gray-300', 'hover:bg-gray-800');
+      }
+    }
+    
+    function showApprovedLoans() {
+      document.getElementById('adminOverview').classList.add('hidden');
+      document.getElementById('userManagementView').classList.add('hidden');
+      document.getElementById('loanManagementView').classList.add('hidden');
+      document.getElementById('loanDetailsView').classList.add('hidden');
+      document.getElementById('approvedLoansView').classList.remove('hidden');
+      updateAdminNavigation('approved');
+    }
+    
+    function approveLoan(button) {
+      const row = button.closest('tr');
+      const statusCell = row.querySelector('td:nth-child(4)');
+      statusCell.innerHTML = '<span class="inline-flex px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">Approved</span>';
+      const actionsCell = row.querySelector('td:nth-child(6)');
+      actionsCell.innerHTML = '<button class="text-primary hover:text-blue-700">View Details</button>';
+    }
+    
+    function rejectLoan(button) {
+      const row = button.closest('tr');
+      const statusCell = row.querySelector('td:nth-child(4)');
+      statusCell.innerHTML = '<span class="inline-flex px-2 py-1 text-xs font-semibold bg-red-100 text-red-800 rounded-full">Rejected</span>';
+      const actionsCell = row.querySelector('td:nth-child(6)');
+      actionsCell.innerHTML = '<button class="text-primary hover:text-blue-700">View Details</button>';
+    }
+    
+    function approveLoanDetail() {
+      alert('Loan application has been approved successfully!');
+      showLoanManagement();
+    }
+    
+    function rejectLoanDetail() {
+      alert('Loan application has been rejected.');
+      showLoanManagement();
+    }
+    
+    // Form controls
+    document.addEventListener('DOMContentLoaded', function() {
+      const checkboxes = document.querySelectorAll('.checkbox-custom');
+      checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('click', function() {
+          const input = this.previousElementSibling;
+          const icon = this.querySelector('i');
+          input.checked = !input.checked;
+          if (input.checked) {
+            this.classList.add('bg-primary', 'border-primary');
+            this.classList.remove('border-gray-300');
+            icon.classList.remove('hidden');
+          } else {
+            this.classList.remove('bg-primary', 'border-primary');
+            this.classList.add('border-gray-300');
+            icon.classList.add('hidden');
+          }
+        });
+    document.addEventListener('DOMContentLoaded', function() {
+      showUserLogin();
+      });
+      });
+    });
+  </script>
+</body>
+</html>``
+
+<!-- <script>
+  // Update the modal control functions to handle the tab styling
+  function showLoginTypeSelection() {
+    document.getElementById('loginTypeSelection').classList.remove('hidden');
+    document.getElementById('userLoginForm').classList.add('hidden');
+    document.getElementById('adminLoginForm').classList.add('hidden');
+  }
+  
+  function showUserLogin() {
+    document.getElementById('userLoginForm').classList.remove('hidden');
+    document.getElementById('adminLoginForm').classList.add('hidden');
+    document.querySelector('.user-tab').classList.add('bg-primary', 'text-white');
+    document.querySelector('.user-tab').classList.remove('text-primary');
+    document.querySelector('.admin-tab').classList.remove('bg-primary', 'text-white');
+    document.querySelector('.admin-tab').classList.add('text-primary');
+  }
+  
+  function showAdminLogin() {
+    document.getElementById('userLoginForm').classList.add('hidden');
+    document.getElementById('adminLoginForm').classList.remove('hidden');
+    document.querySelector('.admin-tab').classList.add('bg-primary', 'text-white');
+    document.querySelector('.admin-tab').classList.remove('text-primary');
+    document.querySelector('.user-tab').classList.remove('bg-primary', 'text-white');
+    document.querySelector('.user-tab').classList.add('text-primary');
+  }
+
+  // Initialize with user login shown by default
+  document.addEventListener('DOMContentLoaded', function() {
+    showUserLogin();
+  });
+</script> -->

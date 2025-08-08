@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Register | SecureBank{% endblock %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center bg-gray-100">
+  <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-8">
+    <div class="text-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-900">Create an Account</h2>
+      <p class="text-gray-600">Sign up to request loans</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="space-y-4">
+
+        <!-- Full Name -->
+        <div>
+          {{ form.full_name.label_tag }}
+          {{ form.full_name }}
+          {% for error in form.full_name.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+          {% endfor %}
+        </div>
+
+        <!-- Username -->
+        <div>
+          {{ form.username.label_tag }}
+          {{ form.username }}
+          {% for error in form.username.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+          {% endfor %}
+        </div>
+
+        <!-- Email -->
+        <div>
+          {{ form.email.label_tag }}
+          {{ form.email }}
+          {% for error in form.email.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+          {% endfor %}
+        </div>
+
+        <!-- Phone
+        <div>
+          {{ form.phone.label_tag }}
+          {{ form.phone }}
+          {% for error in form.phone.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+          {% endfor %}
+        </div> -->
+
+        <!-- Password -->
+        <div>
+          {{ form.password1.label_tag }}
+          {{ form.password1 }}
+          {% for error in form.password1.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+          {% endfor %}
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+          {{ form.password2.label_tag }}
+          {{ form.password2 }}
+          {% for error in form.password2.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+          {% endfor %}
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full bg-primary text-white py-3 rounded-button font-semibold hover:bg-blue-700">
+          Register
+        </button>
+      </div>
+    </form>
+
+    <div class="mt-6 text-sm text-center text-gray-500">
+      Already have an account? 
+      <a href="{% url 'login' %}" class="text-primary hover:underline">Login</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

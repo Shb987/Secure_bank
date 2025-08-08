@@ -1,0 +1,36 @@
+<!-- templates/user/loan_request.html -->
+{% extends "base.html" %}
+
+{% block title %}Apply for a Loan | SecureBank{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-white">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">New Loan Application</h1>
+
+    <div class="bg-gray-50 rounded-xl shadow-sm border border-gray-100 p-8">
+      <form method="post">
+        {% csrf_token %}
+        <div class="space-y-6">
+          {{ form.non_field_errors }}
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Loan Amount</label>
+            {{ form.amount}}
+            {{ form.amount.errors }}
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Purpose</label>
+            {{ form.reason}}
+            {{ form.reason.errors }}
+          </div>
+
+          <button type="submit" class="bg-primary text-white px-6 py-3 rounded-button font-medium hover:bg-blue-700">
+            Submit Application
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,375 @@
+<!-- {% load static %} -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank - Admin Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <!-- Remix Icons -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+
+    <!-- <link href="https://cdn.jsdelivr.net/npm/remixicon@4.0.0/fonts/remixicon.css" rel="stylesheet"> -->
+
+</head>
+<body class="bg-gray-50">
+
+<!-- Admin Dashboard Container -->
+<div id="adminDashboard" class="fixed inset-0 bg-white z-50">
+    <div class="flex h-full">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-gray-900 text-white">
+            <div class="p-6 border-b border-gray-800">
+                <div class="font-['Pacifico'] text-xl">SecureBank</div>
+                <p class="text-gray-400 text-sm mt-1">Admin Portal</p>
+            </div>
+            
+            <nav class="p-4 space-y-2">
+                <a href="#" class="flex items-center px-4 py-3 rounded-lg bg-primary text-white" onclick="showAdminOverview()">
+                    <i class="ri-dashboard-line mr-3"></i> Dashboard
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800" onclick="showUserManagement()">
+                    <i class="ri-user-settings-line mr-3"></i> User Management
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800" onclick="showLoanManagement()">
+                    <i class="ri-file-list-line mr-3"></i> Loan Applications
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800" onclick="showApprovedLoans()">
+                    <i class="ri-check-double-line mr-3"></i> Approved Loans
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col">
+            <!-- Header -->
+            <header class="bg-white border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                                <i class="ri-admin-line text-white text-sm"></i>
+                            </div>
+                            <span class="font-medium text-gray-700">{{ request.user.first_name }}</span>
+                        </div>
+                        <a href="{% url 'logout' %}" class="text-gray-400 hover:text-gray-600">
+                            <i class="ri-logout-box-line"></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-6 overflow-auto">
+                <!-- Dashboard Overview -->
+                <div id="adminOverview">
+                    <!-- Metrics Cards -->
+                    <div class="grid md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 text-sm">Total Users</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ total_users }}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                    <i class="ri-user-line text-xl text-blue-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 text-sm">Pending Applications</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ pending_loans }}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                                    <i class="ri-time-line text-xl text-yellow-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600 text-sm">Approveed Loans</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ approved_loans }}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                    <i class="ri-check-line text-xl text-green-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activities -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activities</h3>
+                        <div class="space-y-4">
+                            {% for activity in recent_activities %}
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 
+                                        {% if activity.type == 'approval' %}bg-green-100 text-green-600
+                                        {% elif activity.type == 'registration' %}bg-blue-100 text-blue-600
+                                        {% else %}bg-yellow-100 text-yellow-600{% endif %} 
+                                        rounded-full flex items-center justify-center mr-3">
+                                        <i class="
+                                            {% if activity.type == 'approval' %}ri-check-line
+                                            {% elif activity.type == 'registration' %}ri-user-add-line
+                                            {% else %}ri-file-text-line{% endif %}"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ activity.title }}</p>
+                                        <p class="text-sm text-gray-600">{{ activity.description }}</p>
+                                    </div>
+                                </div>
+                                <span class="text-sm text-gray-500">{{ activity.timestamp|timesince }} ago</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management View -->
+                <div id="userManagementView" class="hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">User Management</h2>
+                        <div class="relative">
+                            <input type="text" placeholder="Search users..." 
+                                   class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-sm">
+                            <i class="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    {% for user in users %}
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center mr-3"><style>.bg-primary {
+                                                        --tw-bg-opacity: 1;
+                                                        background-color: rgb(30 64 175 / var(--tw-bg-opacity, 1));
+                                                    }</style>
+                                                    <i class="ri-user-fill text-white text-xl"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900">{{ user.first_name }}</div>
+                                                    <div class="text-sm text-gray-500">ID: {{ user.id }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.email}}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold 
+                                                        {% if user.is_active %}bg-green-100 text-green-800
+                                                        {% else %}bg-red-100 text-red-800{% endif %} 
+                                                        rounded-full">
+                                                {% if user.is_active %}Active{% else %}Inactive{% endif %}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.date_joined|date:"M d, Y" }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-primary hover:text-blue-700 mr-3" 
+                                                    onclick="viewUserDetails('{{ user.id }}')">
+                                                View
+                                            </button>
+                                            {% if user.is_active %}
+                                            <button class="text-red-600 hover:text-red-700" 
+                                                    onclick="toggleUserStatus('{{ user.id }}', false)">
+                                                Suspend
+                                            </button>
+                                            {% else %}
+                                            <button class="text-green-600 hover:text-green-700" 
+                                                    onclick="toggleUserStatus('{{ user.id }}', true)">
+                                                Activate
+                                            </button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loan Management View -->
+                <div id="loanManagementView" class="hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Loan Applications</h2>
+                        <div class="flex bg-gray-100 rounded-lg p-1">
+                            <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md">All</button>
+                            <button class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900">Pending</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applicant</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loan Type</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applied</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    {% for loan in loan_applications %}
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center mr-3">,<style>.bg-primary {
+                                                        --tw-bg-opacity: 1;
+                                                        background-color: rgb(30 64 175 / var(--tw-bg-opacity, 1));
+                                                    }</style>
+                                                    <i class="ri-user-line "></i>
+                                                </div>
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900">{{ loan }}</div>
+                                                    <div class="text-sm text-gray-500">Application id : {{ loan.id }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ loan.reason }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${{ loan.amount }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold 
+                                                        {% if loan.status == 'approved' %}bg-green-100 text-green-800
+                                                        {% elif loan.status == 'rejected' %}bg-red-100 text-red-800
+                                                        {% else %}bg-yellow-100 text-yellow-800{% endif %} 
+                                                        rounded-full">
+                                                {{ loan.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ loan.created_at|date:"M d, Y" }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="{% url 'loan_detail' loan.id %}" class="text-primary hover:text-blue-700 mr-3">
+                                                Review
+                                            </a>
+                                            
+                                            {% if loan.status == 'pending' %}
+                                            <button class="text-green-600 hover:text-green-700 mr-3" 
+                                                    onclick="updateLoanStatus('{{ loan.id }}', 'approved')">
+                                                Approve
+                                            </button>
+                                            <button class="text-red-600 hover:text-red-700" 
+                                                    onclick="updateLoanStatus('{{ loan.id }}', 'rejected')">
+                                                Reject
+                                            </button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    // Navigation functions
+    function showAdminOverview() {
+        document.getElementById('adminOverview').classList.remove('hidden');
+        document.getElementById('userManagementView').classList.add('hidden');
+        document.getElementById('loanManagementView').classList.add('hidden');
+        updateActiveNav('dashboard');
+    }
+
+    function showUserManagement() {
+        document.getElementById('adminOverview').classList.add('hidden');
+        document.getElementById('userManagementView').classList.remove('hidden');
+        document.getElementById('loanManagementView').classList.add('hidden');
+        updateActiveNav('users');
+    }
+
+    function showLoanManagement() {
+        document.getElementById('adminOverview').classList.add('hidden');
+        document.getElementById('userManagementView').classList.add('hidden');
+        document.getElementById('loanManagementView').classList.remove('hidden');
+        updateActiveNav('loans');
+    }
+
+    function updateActiveNav(section) {
+        const navLinks = document.querySelectorAll('aside nav a');
+        navLinks.forEach(link => {
+            link.classList.remove('bg-primary', 'text-white');
+            link.classList.add('text-gray-300', 'hover:bg-gray-800');
+        });
+        
+        if (section === 'dashboard') navLinks[0].classList.add('bg-primary', 'text-white');
+        if (section === 'users') navLinks[1].classList.add('bg-primary', 'text-white');
+        if (section === 'loans') navLinks[2].classList.add('bg-primary', 'text-white');
+    }
+
+    // AJAX Functions
+    function updateLoanStatus(loanId, status) {
+        fetch(`/api/loans/${loanId}/update_status/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({status: status})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                location.reload(); // Refresh to show updated status
+            } else {
+                alert('Error updating loan status');
+            }
+        });
+    }
+
+    function toggleUserStatus(userId, activate) {
+        fetch(`/api/users/${userId}/toggle_status/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({activate: activate})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                location.reload(); // Refresh to show updated status
+            } else {
+                alert('Error updating user status');
+            }
+        });
+    }
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        showAdminOverview();
+        document.getElementById('adminDashboard').classList.remove('hidden');
+    });
+</script>
+
+</body>
+</html>

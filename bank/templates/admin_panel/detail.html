@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Application Details | SecureBank Admin</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <!-- Remix Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        .rounded-button { border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Main Container -->
+    <div class="min-h-screen bg-white">
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="{% url 'admin_dashboard' %}" class="flex items-center text-gray-400 hover:text-gray-600">
+                    <i class="ri-arrow-left-line text-xl mr-2"></i>
+                    <span>Back to Applications</span>
+                </a>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                            <i class="ri-admin-line text-white text-sm"></i>
+                        </div>
+                        <span class="font-medium text-gray-700">{{ request.user.get_full_name }}</span>
+                    </div>
+                    <a href="{% url 'logout' %}" class="text-gray-400 hover:text-gray-600">
+                        <i class="ri-logout-box-line"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+        
+
+        <!-- Loan Details Content -->
+        <main class="p-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Loan Application Details</h1>
+            
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Left Column (2/3 width) -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Applicant Information -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Applicant Information</h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-600">Full Name</p>
+                                <p class="font-medium text-gray-900">{{ loan.user_id }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Email</p>
+                                <p class="font-medium text-gray-900">{{ loan.user_id.username }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Phone</p>
+                                <p class="font-medium text-gray-900">{{ loan.phone_number }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Address</p>
+                                <p class="font-medium text-gray-900">{{ loan.user.address }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loan Details -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Loan Details</h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-600">Loan Type</p>
+                                <p class="font-medium text-gray-900">{{ loan.get_loan_type_display }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Requested Amount</p>
+                                <p class="font-medium text-gray-900">${{ loan.amount }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Purpose</p>
+                                <p class="font-medium text-gray-900">{{ loan.reason }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Term</p>
+                                <p class="font-medium text-gray-900">{{ loan.term }} months</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Employment Information -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Employment Information</h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-600">Employer</p>
+                                <p class="font-medium text-gray-900">{{ loan.employment.employer }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Position</p>
+                                <p class="font-medium text-gray-900">{{ loan.employment.position }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Annual Income</p>
+                                <p class="font-medium text-gray-900">${{ loan.employment.annual_income }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Employment Duration</p>
+                                <p class="font-medium text-gray-900">{{ loan.employment.duration_years }} years</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column (1/3 width) -->
+                <div class="space-y-6">
+                    <!-- Application Status -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Application Status</h2>
+                        <div class="space-y-4">
+                            <!-- {% for status in loan_applications %} -->
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 
+                                    {% if loan.status == 'approved' %}bg-green-100 text-green-600
+                                    {% elif loan.status == 'rejected' %}bg-red-100 text-red-600
+                                    {% else %}bg-yellow-100 text-yellow-600{% endif %} 
+                                    rounded-full flex items-center justify-center mr-3">
+                                    <i class="
+                                        {% if loan.status == 'approved' %}ri-check-line
+                                        {% elif loan.status == 'rejected' %}ri-close-line
+                                        {% else %}ri-time-line{% endif %}"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-900">{{ loan.status }}</p>
+                                    <p class="text-sm text-gray-600">{{ status.timestamp|date:"M d, Y" }}</p>
+                                </div>
+                            </div>
+                            <!-- {% endfor %} -->
+                        </div>
+                    </div>
+
+                    <!-- Admin Actions -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Admin Actions</h2>
+                        <div class="space-y-3">
+                            <h1>{{ loan.status }}</h1>
+                            {% if loan.status == 'Pending' %}
+                            <h1>haii</h1>
+                            <form method="post" action="{% url 'update_loan_status' loan.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="Approved">
+                                <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-button font-medium hover:bg-green-700 flex items-center justify-center">
+                                    <i class="ri-check-line mr-2"></i> Approve Loan
+                                </button>
+                            </form>
+                            <form method="post" action="{% url 'update_loan_status' loan.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="Rejected">
+                                <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-button font-medium hover:bg-red-700 flex items-center justify-center">
+                                    <i class="ri-close-line mr-2"></i> Reject Application
+                                </button>
+                            </form>
+                            {% endif %}
+                            <button class="w-full border border-gray-300 text-gray-700 py-3 rounded-button font-medium hover:bg-gray-50 flex items-center justify-center">
+                                <i class="ri-file-text-line mr-2"></i> Request Documents
+                            </button>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

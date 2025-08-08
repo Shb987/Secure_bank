@@ -1,0 +1,45 @@
+<!-- templates/admin_panel/users.html -->
+{% extends "base.html" %}
+
+{% block title %}User Management | SecureBank Admin{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Manage Users</h1>
+
+    {% if users %}
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded-xl shadow-sm border border-gray-200">
+          <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+            <tr>
+              <th class="px-6 py-4">User ID</th>
+              <th class="px-6 py-4">Name</th>
+              <th class="px-6 py-4">Email</th>
+              <th class="px-6 py-4">Date Joined</th>
+              <th class="px-6 py-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm text-gray-800 divide-y divide-gray-100">
+            {% for user in users %}
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 font-medium">#{{ user.id }}</td>
+                <td class="px-6 py-4">{{ user.get_full_name }}</td>
+                <td class="px-6 py-4">{{ user.email }}</td>
+                <td class="px-6 py-4">{{ user.date_joined|date:"M d, Y" }}</td>
+                <td class="px-6 py-4">
+                  <a href="{% url 'admin_user_detail' user.id %}" class="text-blue-600 hover:underline text-sm font-medium">View</a>
+                  |
+                  <a href="{% url 'admin_user_delete' user.id %}" class="text-red-600 hover:underline text-sm font-medium">Delete</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-center text-gray-600 mt-12">No users found.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,121 @@
+
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}SecureBank{% endblock %}</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1e40af',
+            secondary: '#3b82f6',
+          },
+          borderRadius: {
+            'button': '8px'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+
+  <style>
+    :where([class^="ri-"])::before {
+      content: "\f3c2";
+    }
+    .hero-bg {
+      background-image: url('https://readdy.ai/api/search-image?query=Modern%20banking%20building%20with%20glass%20facade%20and%20professional%20atmosphere%2C%20clean%20corporate%20environment%20with%20blue%20and%20white%20color%20scheme%2C%20financial%20district%20skyline%2C%20professional%20lighting%2C%20minimalist%20architecture%2C%20contemporary%20design&width=1920&height=1080&seq=hero-banking&orientation=landscape');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-4">
+          <div class="font-['Pacifico'] text-2xl text-primary">SecureBank</div>
+        </div>
+        <nav class="hidden md:flex space-x-8">
+          <a href="/" class="text-gray-700 hover:text-primary font-medium">Home</a>
+          <!-- <a href="#" class="text-gray-700 hover:text-primary font-medium">Services</a>
+          <a href="#" class="text-gray-700 hover:text-primary font-medium">Loans</a>
+          <a href="#" class="text-gray-700 hover:text-primary font-medium">About</a>
+          <a href="#" class="text-gray-700 hover:text-primary font-medium">Contact</a> -->
+        </nav>
+        <!-- <div class="flex items-center space-x-4">
+          <a href="{% url 'login' %}" class="bg-primary text-white px-6 py-2 rounded-button font-medium hover:bg-blue-700 whitespace-nowrap">
+            Login
+          </a>
+        </div> -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-16 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <div class="font-['Pacifico'] text-2xl mb-4">SecureBank</div>
+          <p class="text-gray-400 mb-4">Your trusted financial partner since 1985.</p>
+          <div class="flex space-x-4">
+            <i class="ri-facebook-fill text-xl"></i>
+            <i class="ri-twitter-fill text-xl"></i>
+            <i class="ri-linkedin-fill text-xl"></i>
+            <i class="ri-instagram-fill text-xl"></i>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Services</h3>
+          <ul class="space-y-2 text-gray-400">
+            <li><a href="#" class="hover:text-white">Personal Banking</a></li>
+            <li><a href="#" class="hover:text-white">Business Banking</a></li>
+            <li><a href="#" class="hover:text-white">Loans & Mortgages</a></li>
+            <li><a href="#" class="hover:text-white">Investments</a></li>
+            <li><a href="#" class="hover:text-white">Insurance</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Support</h3>
+          <ul class="space-y-2 text-gray-400">
+            <li><a href="#" class="hover:text-white">Help Center</a></li>
+            <li><a href="#" class="hover:text-white">Contact Us</a></li>
+            <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-white">Security</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Contact</h3>
+          <p class="text-gray-400">support@securebank.com</p>
+          <p class="text-gray-400">1-800-SECURE-1</p>
+          <p class="text-gray-400">123 Financial District, NY</p>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-12 pt-8 text-sm text-center text-gray-400">
+        &copy; 2025 SecureBank. All rights reserved.
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+

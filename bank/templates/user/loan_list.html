@@ -1,0 +1,50 @@
+<!-- templates/user/loan_list.html -->
+{% extends "base.html" %}
+
+{% block title %}My Loan Applications | SecureBank{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-50">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">My Loan Applications</h1>
+
+    {% if loans %}
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded-xl shadow-sm border border-gray-200">
+          <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+            <tr>
+              <th class="px-6 py-4">Loan ID</th>
+              <th class="px-6 py-4">Amount</th>
+              <th class="px-6 py-4">Purpose</th>
+              <th class="px-6 py-4">Status</th>
+              <th class="px-6 py-4">Date Requested</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm text-gray-800 divide-y divide-gray-100">
+            {% for loan in loans %}
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 font-medium">#{{ loan.id }}</td>
+                <td class="px-6 py-4">${{ loan.amount }}</td>
+                <td class="px-6 py-4">{{ loan.reason|truncatechars:60 }}</td>
+                <td class="px-6 py-4">
+                  <span class="
+                    px-2 py-1 rounded-full text-xs font-semibold 
+                    {% if loan.status == 'Approved' %}bg-green-100 text-green-700
+                    {% elif loan.status == 'Rejected' %}bg-red-100 text-red-700
+                    {% else %}bg-yellow-100 text-yellow-700{% endif %}
+                  ">
+                    {{ loan.status }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">{{ loan.created_at|date:"M d, Y" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-gray-600 text-center mt-12">You haven’t applied for any loans yet.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
