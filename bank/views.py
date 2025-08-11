@@ -28,20 +28,172 @@ def login_view(request):
             return render(request, 'base2.html', {'error': 'Invalid credentials'})
     return render(request, 'base2.html')
 
+# def user_dashboard(request):
+#     user_loans = LoanRequest.objects.filter(user=request.user)
+
+#     context = {
+#         'active_loans': user_loans.filter(status='approved').count(),
+#         'pending_loans': user_loans.filter(status='pending').count(),
+#         'rejected_loans': user_loans.filter(status='rejected').count(),
+#         'total_loans': user_loans.count(),
+#         'full_name': request.user.get_full_name() or request.user.username,
+#         'loan_applications': user_loans.order_by('-application_date')  # latest first
+
+#     }
+#     print(context)
+#     return render(request, 'user/db2.html', context)
+
 def user_dashboard(request):
-    user_loans = LoanRequest.objects.filter(user=request.user)
+    loans = LoanRequest.objects.filter(user=request.user)
+    return render(request, "user/dashboard.html", {
+        "active_loans": loans.filter(status='approved').count(),
+        "pending_loans": loans.filter(status='pending').count(),
+        "rejected_loans": loans.filter(status='rejected').count(),
+        "full_name": request.user.get_full_name() or request.user.username,
+        "active": "dashboard"
+    })
 
-    context = {
-        'active_loans': user_loans.filter(status='approved').count(),
-        'pending_loans': user_loans.filter(status='pending').count(),
-        'rejected_loans': user_loans.filter(status='rejected').count(),
-        'total_loans': user_loans.count(),
-        'full_name': request.user.get_full_name() or request.user.username,
-        'loan_applications': user_loans.order_by('-application_date')  # latest first
+def loan_applications(request):
+    loans = LoanRequest.objects.filter(user=request.user)
+    return render(request, "user/loan_applications.html", {
+        "loan_applications": loans,
+        "full_name": request.user.get_full_name() or request.user.username,
+        "active": "loans"
+    })
 
-    }
-    print(context)
-    return render(request, 'user/db2.html', context)
+def loan_application_form(request):
+    return render(request, "user/loan_form.html", {
+        "full_name": request.user.get_full_name() or request.user.username,
+        "active": "loans"
+    })
+
+
+import joblib
+import pandas as pd
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import LoanRequest
+from django.views.decorators.csrf import csrf_exempt
+import numpy as np
+# Load the trained RandomForest model (you save it after training)
+Rf_model = joblib.load('ml_models/rf_model.pkl')
+scaler_loaded = joblib.load("ml_models/minmax_scaler.pkl")
+
+@login_required
+@csrf_exempt
+def loan_application_submit(request):
+    if request.method == 'POST':
+        try:
+            # Step 1 values
+            income_annum = float(request.POST.get('income_annum'))
+            loan_amount = float(request.POST.get('loan_amount'))
+
+            # Step 2 values
+            no_of_dependents = int(request.POST.get('no_of_dependents'))
+            education = 0 if request.POST.get('education') == "Graduate" else 1
+            self_employed = 1 if request.POST.get('self_employed') == "Yes" else 0
+            loan_term = int(request.POST.get('loan_term'))
+            cibil_score = float(request.POST.get('cibil_score'))
+            residential_assets_value = float(request.POST.get('residential_assets_value'))
+            commercial_assets_value = float(request.POST.get('commercial_assets_value'))
+            luxury_assets_value = float(request.POST.get('luxury_assets_value'))
+            bank_asset_value = float(request.POST.get('bank_asset_value'))
+            numerical_col = [no_of_dependents, loan_term, 'cibil_score',
+                            'residential_assets_value', 'commercial_assets_value',
+                            'luxury_assets_value', 'bank_asset_value', 'debt_to_income']
+            # Auto-calculated
+            debt_to_income = loan_amount / income_annum if income_annum > 0 else 0
+            # Scale only numeric columns
+            numeric_values = np.array([[
+                no_of_dependents, loan_term, cibil_score,
+                residential_assets_value, commercial_assets_value,
+                luxury_assets_value, bank_asset_value, debt_to_income
+            ]])
+            numeric_scaled = scaler_loaded.transform(numeric_values)
+
+            # Insert education & self_employed back in correct positions
+            # Position 0 = scaled no_of_dependents
+            # Position 1 = education (raw)
+            # Position 2 = self_employed (raw)
+            features_final = np.insert(numeric_scaled, 1, education, axis=1)  # insert education at index 1
+            features_final = np.insert(features_final, 2, self_employed, axis=1)  # insert self_employed at index 2
+            print(features_final)
+            prediction = Rf_model.predict(features_final)[0]  # 1=Approved, 0=Rejected
+
+            print(prediction)
+            # Save LoanRequest (only valid model fields)
+            LoanRequest.objects.create(
+                user=request.user,
+                loan_type=request.POST.get('loan_type', 'personal'),
+                amount=loan_amount,
+                purpose="Loan Application",  # Or capture actual purpose from form
+                status='approved' if prediction == 1 else 'rejected'
+            )
+
+            # Success message
+            if prediction == 1:
+                messages.success(request, "✅ Loan application submitted & approved!")
+            else:
+                messages.warning(request, "⚠ Loan application submitted but rejected.")
+
+        except Exception as e:
+            print("Error saving loan:", e)
+            messages.error(request, "❌ Failed to submit your loan application.")
+
+        return redirect('loan_applications')  # Redirect to loan list page
+
+    # If GET request, show form
+    return render(request, 'user/loan_form.html')
+
+# def loan_application_submit(request):
+#     if request.method == 'POST':
+#         # Step 1 data
+#         income_annum = float(request.POST.get('income_annum'))
+#         loan_amount = float(request.POST.get('loan_amount'))
+
+#         # Step 2 data
+#         no_of_dependents = int(request.POST.get('no_of_dependents'))
+#         education = 1 if request.POST.get('education') == "Graduate" else 0
+#         self_employed = 1 if request.POST.get('self_employed') == "Yes" else 0
+#         loan_term = int(request.POST.get('loan_term'))
+#         cibil_score = float(request.POST.get('cibil_score'))
+#         residential_assets_value = float(request.POST.get('residential_assets_value'))
+#         commercial_assets_value = float(request.POST.get('commercial_assets_value'))
+#         luxury_assets_value = float(request.POST.get('luxury_assets_value'))
+#         bank_asset_value = float(request.POST.get('bank_asset_value'))
+
+#         # Auto-calculated field
+#         debt_to_income = loan_amount / income_annum
+
+#         # ML model prediction
+#         features = np.array([[
+#             no_of_dependents, education, self_employed, loan_term,
+#             cibil_score, residential_assets_value, commercial_assets_value,
+#             luxury_assets_value, bank_asset_value, debt_to_income
+#         ]])
+
+#         prediction = Rf_model.predict(features)[0]  # 1=Approved, 0=Rejected
+
+#         # Save only the fields that exist in LoanRequest model
+#         LoanRequest.objects.create(
+#             user=request.user,
+#             amount=loan_amount,  # matches the model field `amount`
+#             term_months=loan_term,
+#             status='approved' if prediction == 1 else 'rejected',
+#             loan_type='personal',  # or get from form if needed
+#             purpose="Loan application submitted via ML model",  # generic purpose
+#             interest_rate=5.0
+#         )
+
+#         # Success or failure message
+#         if prediction == 1:
+#             messages.success(request, "✅ Your loan application has been approved!")
+#         else:
+#             messages.warning(request, "❌ Your loan application has been rejected.")
+
+#         return render(request, 'user/db2.html')  # stay on same page
+
+#     return render(request, 'user/db2.html')
 
 
 @login_required

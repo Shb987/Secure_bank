@@ -1,0 +1,33 @@
+{% extends "user/dashboard_base.html" %}
+{% block title %}Loan Applications{% endblock %}
+{% block header %}Loan Applications{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-bold">Your Applications</h2>
+    <a href="{% url 'loan_application_form' %}" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-700">New Application</a>
+</div>
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    {% for loan in loan_applications %}
+    <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex justify-between">
+            <div>
+                <h4 class="font-medium">{{ loan.loan_type }} - ${{ loan.amount }}</h4>
+                <p class="text-sm text-gray-600">Applied on {{ loan.application_date|date:"F j, Y" }}</p>
+                <p class="text-sm text-gray-600">Purpose: {{ loan.purpose }}</p>
+            </div>
+            <div>
+                {% if loan.status == 'pending' %}
+                    <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs">Pending</span>
+                {% elif loan.status == 'approved' %}
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs">Approved</span>
+                {% elif loan.status == 'rejected' %}
+                    <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs">Rejected</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="px-6 py-4 text-gray-500">You have no loan applications yet.</div>
+    {% endfor %}
+</div>
+{% endblock %}

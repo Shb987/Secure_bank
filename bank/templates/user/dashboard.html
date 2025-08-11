@@ -1,79 +1,26 @@
-<!-- templates/user/dashboard.html -->
-{% extends "base.html" %}
-
-{% block title %}User Dashboard2 | SecureBank{% endblock %}
-
+{% extends "user/dashboard_base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block header %}Dashboard{% endblock %}
 {% block content %}
-<section class="py-12 bg-gray-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Welcome, {{ user.first_name }}!</h1>
-
-    <!-- Account Summary Cards -->
-    <div class="grid md:grid-cols-3 gap-6 mb-12">
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <p class="text-gray-600 text-sm">Account Balancwe</p>
-        <p class="text-2xl font-bold text-gray-900">$24,580.50</p>
-      </div>
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+<div class="grid md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <p class="text-gray-600 text-sm">Active Loans</p>
-        <p class="text-2xl font-bold text-gray-900">2</p>
-      </div>
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <p class="text-gray-600 text-sm">Credit Score</p>
-        <p class="text-2xl font-bold text-gray-900">785</p>
-      </div>
+        <p class="text-2xl font-bold text-gray-900">{{ active_loans }}</p>
     </div>
-
-    <!-- Quick Actions -->
-    <div class="grid md:grid-cols-2 gap-6">
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-        <div class="grid grid-cols-2 gap-4">
-          <a href="{% url 'apply_loan' %}" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-left">
-            <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
-              <i class="ri-add-line text-primary"></i>
-            </div>
-            <p class="font-medium text-gray-900">Apply for Loan</p>
-            <p class="text-sm text-gray-600">Start a new loan request</p>
-          </a>
-          <a href="#" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-left">
-            <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mb-2">
-              <i class="ri-exchange-line text-primary"></i>
-            </div>
-            <p class="font-medium text-gray-900">Transfer Funds</p>
-            <p class="text-sm text-gray-600">Send or receive money</p>
-          </a>
-        </div>
-      </div>
-
-      <!-- Recent Activities -->
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activities</h3>
-        <div class="space-y-4">
-          <div class="flex justify-between">
-            <div>
-              <p class="font-medium text-gray-900">Salary Deposit</p>
-              <p class="text-sm text-gray-600">Aug 1, 2025</p>
-            </div>
-            <span class="text-green-600 font-semibold">+$4,200.00</span>
-          </div>
-          <div class="flex justify-between">
-            <div>
-              <p class="font-medium text-gray-900">Loan Payment</p>
-              <p class="text-sm text-gray-600">Jul 28, 2025</p>
-            </div>
-            <span class="text-red-600 font-semibold">-$850.00</span>
-          </div>
-          <div class="flex justify-between">
-            <div>
-              <p class="font-medium text-gray-900">Purchase - Electronics</p>
-              <p class="text-sm text-gray-600">Jul 22, 2025</p>
-            </div>
-            <span class="text-red-600 font-semibold">-$125.99</span>
-          </div>
-        </div>
-      </div>
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <p class="text-gray-600 text-sm">Pending Loans</p>
+        <p class="text-2xl font-bold text-gray-900">{{ pending_loans }}</p>
     </div>
-  </div>
-</section>
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <p class="text-gray-600 text-sm">Rejected Loans</p>
+        <p class="text-2xl font-bold text-gray-900">{{ rejected_loans }}</p>
+    </div>
+</div>
+
+<div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+    <a href="{% url 'loan_application_form' %}" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 block">
+        <i class="ri-add-line text-primary mr-2"></i> Apply for Loan
+    </a>
+</div>
 {% endblock %}

@@ -27,6 +27,10 @@ urlpatterns = [
     path('admin-panel/loans/<int:loan_id>/reject/', views.reject_loan, name='reject_loan'),
     path('admin-panel/loans/<int:loan_id>/', views.loan_detail, name='loan_detail'),
     path('admin-panel/loans/<int:loan_id>/update_status/', views.update_loan_status, name='update_loan_status'),
-    # path('admin-panel/loans/<int:loan_id>/save_notes/', views.save_loan_notes, name='save_loan_notes'),
-    # path('loans/', views.loan_management, name='loan_management'),
+    # path('loan-application/submit/', views.loan_application_submit, name='loan_application_submit'),
+
+    path('dashboard/', views.user_dashboard, name='user_dashboard'),
+    path('loan-applications/', views.loan_applications, name='loan_applications'),
+    path('loan-applications/new/', views.loan_application_form, name='loan_application_form'),
+    path('loan-applications/submit/', views.loan_application_submit, name='loan_application_submit'),
 ]
