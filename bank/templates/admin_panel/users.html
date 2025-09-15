@@ -1,5 +1,5 @@
 <!-- templates/admin_panel/users.html -->
-{% extends "base.html" %}
+{% extends "admin_panel/base.html" %}
 
 {% block title %}User Management | SecureBank Admin{% endblock %}
 
@@ -24,7 +24,7 @@
             {% for user in users %}
               <tr class="hover:bg-gray-50 transition-colors">
                 <td class="px-6 py-4 font-medium">#{{ user.id }}</td>
-                <td class="px-6 py-4">{{ user.get_full_name }}</td>
+                <td class="px-6 py-4">{{ user.first_name }}</td>
                 <td class="px-6 py-4">{{ user.email }}</td>
                 <td class="px-6 py-4">{{ user.date_joined|date:"M d, Y" }}</td>
                 <td class="px-6 py-4">

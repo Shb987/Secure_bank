@@ -1,5 +1,4 @@
-<!-- templates/admin_panel/loans.html -->
-{% extends "base.html" %}
+{% extends "admin_panel/base.html" %}
 
 {% block title %}Loan Requests | SecureBank Admin{% endblock %}
 
@@ -17,7 +16,7 @@
               <th class="px-6 py-4">User</th>
               <th class="px-6 py-4">Amount</th>
               <th class="px-6 py-4">Status</th>
-              <th class="px-6 py-4">Date</th>
+              <th class="px-6 py-4">Application Date</th>
               <th class="px-6 py-4">Actions</th>
             </tr>
           </thead>
@@ -30,19 +29,25 @@
                 <td class="px-6 py-4">
                   <span class="
                     px-2 py-1 rounded-full text-xs font-semibold 
-                    {% if loan.status == 'Approved' %}bg-green-100 text-green-700
-                    {% elif loan.status == 'Rejected' %}bg-red-100 text-red-700
+                    {% if loan.status|lower == 'approved' %}bg-green-100 text-green-700
+                    {% elif loan.status|lower == 'rejected' %}bg-red-100 text-red-700
                     {% else %}bg-yellow-100 text-yellow-700{% endif %}
                   ">
                     {{ loan.status }}
                   </span>
                 </td>
-                <td class="px-6 py-4">{{ loan.created_at|date:"M d, Y" }}</td>
+                <td class="px-6 py-4">{{ loan.application_date|date:"M d, Y" }}</td>
                 <td class="px-6 py-4 space-x-2">
-                  {% if loan.status == "Pending" %}
+                  {% if loan.status|lower == "rejected" %}
+                    <a href="{% url 'approve_loan' loan.id %}" class="text-green-600 hover:underline text-sm font-medium">Approve</a>
+                    <a href="{% url 'pending_loan' loan.id %}" class="text-orange-600 hover:underline text-sm font-medium">Pending</a>
+                  {% elif loan.status|lower == "pending" %}
                     <a href="{% url 'approve_loan' loan.id %}" class="text-green-600 hover:underline text-sm font-medium">Approve</a>
                     <a href="{% url 'reject_loan' loan.id %}" class="text-red-600 hover:underline text-sm font-medium">Reject</a>
-                  {% else %}
+                  {% elif loan.status|lower == "approved" %}
+                    <a href="{% url 'pending_loan' loan.id %}" class="text-orange-600 hover:underline text-sm font-medium">Pending</a>
+                    <a href="{% url 'reject_loan' loan.id %}" class="text-red-600 hover:underline text-sm font-medium">Reject</a>
+                    {% else %}
                     <span class="text-gray-500 text-sm">—</span>
                   {% endif %}
                 </td>

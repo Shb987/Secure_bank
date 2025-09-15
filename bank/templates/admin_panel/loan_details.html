@@ -1,61 +1,75 @@
-<!-- templates/admin_panel/loan_details.html -->
-{% extends "base.html" %}
+{% extends "admin_panel/base.html" %}
 
-{% block title %}Loan Request #{{ loan.id }} | SecureBank Admin{% endblock %}
+{% block title %}Loan #{{ loan.id }} Details | SecureBank Admin{% endblock %}
+{% block page_title %}Loan #{{ loan.id }} Details{% endblock %}
 
 {% block content %}
-<section class="py-12 bg-white">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-6">Loan Request #{{ loan.id }}</h1>
+<div class="max-w-4xl mx-auto mb-6">
 
-    <div class="bg-gray-50 rounded-xl shadow-sm border border-gray-200 p-8">
-      <div class="grid md:grid-cols-2 gap-6 mb-6">
-        <div>
-          <p class="text-gray-600 text-sm">Applicant</p>
-          <p class="text-lg font-semibold text-gray-900">{{ loan.user.get_full_name }}</p>
-        </div>
-        <div>
-          <p class="text-gray-600 text-sm">Email</p>
-          <p class="text-lg text-gray-900">{{ loan.user.email }}</p>
-        </div>
-        <div>
-          <p class="text-gray-600 text-sm">Loan Amount</p>
-          <p class="text-lg font-semibold text-gray-900">${{ loan.amount }}</p>
-        </div>
-        <div>
-          <p class="text-gray-600 text-sm">Status</p>
-          <span class="
-            inline-block px-3 py-1 text-sm font-semibold rounded-full 
-            {% if loan.status == 'Approved' %}bg-green-100 text-green-700
-            {% elif loan.status == 'Rejected' %}bg-red-100 text-red-700
-            {% else %}bg-yellow-100 text-yellow-700{% endif %}
-          ">
-            {{ loan.status }}
-          </span>
-        </div>
-        <div class="md:col-span-2">
-          <p class="text-gray-600 text-sm mb-1">Purpose</p>
-          <p class="text-gray-900">{{ loan.reason }}</p>
-        </div>
-        <div class="md:col-span-2">
-          <p class="text-gray-600 text-sm mb-1">Requested On</p>
-          <p class="text-gray-900">{{ loan.created_at|date:"F d, Y H:i A" }}</p>
-        </div>
-      </div>
+  <a href="{% url 'loans_approved' %}" 
+    class="flex items-center text-gray-500 hover:text-gray-700">
+    <i class="ri-arrow-left-line text-lg mr-2"></i>
+    Back to Approved Loans
+  </a>
+</div>
 
-      {% if loan.status == "Pending" %}
-        <div class="flex space-x-4 mt-8">
-          <a href="{% url 'approve_loan' loan.id %}" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-button font-medium">
-            Approve
-          </a>
-          <a href="{% url 'reject_loan' loan.id %}" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-button font-medium">
-            Reject
-          </a>
-        </div>
-      {% else %}
-        <p class="mt-8 text-gray-600">This loan request has already been <strong>{{ loan.status }}</strong>.</p>
-      {% endif %}
+<section class="max-w-4xl mx-auto bg-white shadow-sm border border-gray-200 rounded-xl p-6">
+  <h2 class="text-2xl font-bold text-gray-900 mb-6">Loan Application Details</h2>
+
+  <dl class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <dt class="font-medium text-gray-700">Applicant</dt>
+      <dd class="text-gray-900">{{ loan.user.get_full_name }} ({{ loan.user.email }})</dd>
     </div>
+
+    <div>
+      <dt class="font-medium text-gray-700">Amount</dt>
+      <dd class="text-gray-900">${{ loan.amount }}</dd>
+    </div>
+
+    <div>
+      <dt class="font-medium text-gray-700">Loan Type</dt>
+      <dd class="text-gray-900">{{ loan.loan_type }}</dd>
+    </div>
+
+    <div>
+      <dt class="font-medium text-gray-700">Term (Months)</dt>
+      <dd class="text-gray-900">{{ loan.term_months }}</dd>
+    </div>
+
+    <div>
+      <dt class="font-medium text-gray-700">Interest Rate</dt>
+      <dd class="text-gray-900">{{ loan.interest_rate }}%</dd>
+    </div>
+
+    <div>
+      <dt class="font-medium text-gray-700">Status</dt>
+      <dd>
+        <span class="px-3 py-1 text-sm rounded-full 
+          {% if loan.status == 'Approved' %}bg-green-100 text-green-700
+          {% elif loan.status == 'Rejected' %}bg-red-100 text-red-700
+          {% else %}bg-yellow-100 text-yellow-700{% endif %}">
+          {{ loan.status }}
+        </span>
+      </dd>
+    </div>
+
+    <div>
+      <dt class="font-medium text-gray-700">Application Date</dt>
+      <dd class="text-gray-900">{{ loan.application_date|date:"M d, Y H:i" }}</dd>
+    </div>
+
+    {% if loan.approved_date %}
+    <div>
+      <dt class="font-medium text-gray-700">Approved Date</dt>
+      <dd class="text-gray-900">{{ loan.approved_date|date:"M d, Y H:i" }}</dd>
+    </div>
+    {% endif %}
+  </dl>
+
+  <div class="mt-6">
+    <dt class="font-medium text-gray-700">Purpose</dt>
+    <dd class="text-gray-900 mt-2">{{ loan.purpose }}</dd>
   </div>
 </section>
 {% endblock %}

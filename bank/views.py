@@ -45,10 +45,11 @@ def login_view(request):
 
 def user_dashboard(request):
     loans = LoanRequest.objects.filter(user=request.user)
+    print(loans)
     return render(request, "user/dashboard.html", {
-        "active_loans": loans.filter(status='approved').count(),
-        "pending_loans": loans.filter(status='pending').count(),
-        "rejected_loans": loans.filter(status='rejected').count(),
+        "active_loans": loans.filter(status='Approved').count(),
+        "pending_loans": loans.filter(status='Pending').count(),
+        "rejected_loans": loans.filter(status='Rejected').count(),
         "full_name": request.user.get_full_name() or request.user.username,
         "active": "dashboard"
     })
@@ -58,13 +59,13 @@ def loan_applications(request):
     return render(request, "user/loan_applications.html", {
         "loan_applications": loans,
         "full_name": request.user.get_full_name() or request.user.username,
-        "active": "loans"
+        "active": "loan_applications"
     })
 
 def loan_application_form(request):
     return render(request, "user/loan_form.html", {
         "full_name": request.user.get_full_name() or request.user.username,
-        "active": "loans"
+        "active": "loan_applications"
     })
 
 
@@ -127,14 +128,14 @@ def loan_application_submit(request):
                 loan_type=request.POST.get('loan_type', 'personal'),
                 amount=loan_amount,
                 purpose="Loan Application",  # Or capture actual purpose from form
-                status='approved' if prediction == 1 else 'rejected'
+                status='Approved' if prediction == 0 else 'Rejected'
             )
 
             # Success message
             if prediction == 1:
-                messages.success(request, "✅ Loan application submitted & approved!")
-            else:
                 messages.warning(request, "⚠ Loan application submitted but rejected.")
+            else:
+                messages.success(request, "✅ Loan application submitted & approved!")
 
         except Exception as e:
             print("Error saving loan:", e)
@@ -212,12 +213,50 @@ def apply_loan(request):
 
 @login_required
 def user_loan_list(request):
-    loans = LoanRequest.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'user/loan_list.html', {'loans': loans})
+    loans = LoanRequest.objects.filter(user=request.user).order_by('-application_date')
+    return render(request, 'user/loan_list.html', 
+                  {'loans': loans,
+                  "full_name": request.user.get_full_name() or request.user.username,
+                  "active": "loan_list"})
 
 def logout_view(request):
     logout(request)
     return redirect('login')
+from django.contrib.auth import update_session_auth_hash
+
+@login_required
+def user_profile(request):
+    user = request.user
+
+    if request.method == 'POST':
+        if 'update_profile' in request.POST:
+            # Update profile info
+            user.first_name = request.POST.get('first_name', user.first_name)
+            user.last_name = request.POST.get('last_name', user.last_name)
+            user.email = request.POST.get('email', user.email)
+            user.save()
+            messages.success(request, "Profile updated successfully!")
+
+        elif 'change_password' in request.POST:
+            # Change password
+            old_password = request.POST.get('old_password')
+            new_password1 = request.POST.get('new_password1')
+            new_password2 = request.POST.get('new_password2')
+
+            if not user.check_password(old_password):
+                messages.error(request, "Current password is incorrect.")
+            elif new_password1 != new_password2:
+                messages.error(request, "New passwords do not match.")
+            else:
+                user.set_password(new_password1)
+                user.save()
+                update_session_auth_hash(request, user)  # keeps user logged in
+                messages.success(request, "Password changed successfully!")
+
+    return render(request, "user/user_profile.html",
+                            {"user": user,
+                            "active": "profile",
+                            "full_name": request.user.get_full_name() or request.user.username})
 # ------------------- ADMIN VIEWS -------------------
 
 @user_passes_test(is_admin)
@@ -228,18 +267,35 @@ def admin_dashboard(request):
         'approved_loans': LoanRequest.objects.filter(status='Approved').count(),
         'pending_loans': LoanRequest.objects.filter(status='Pending').count(),
         'users' : User.objects.filter(is_staff=False).order_by('-date_joined'),
-        'loan_applications': LoanRequest.objects.select_related('user').order_by('-application_date')[:50]
+        'loan_applications': LoanRequest.objects.select_related('user').order_by('-application_date')[:50],
+        'recent_activities': LoanRequest.objects.select_related('user').order_by('-application_date')[:5]  # 👈 added
 
     }
     print(context)
-    return render(request, 'admin_panel/dashboard2.html', context)
+    return render(request, 'admin_panel/dashboard.html', context)
 
 
 @user_passes_test(is_admin)
 def admin_user_list(request):
-    users = User.objects.filter(is_staff=True).order_by('-date_joined')
+    
+    users = User.objects.filter(is_staff=False).order_by('-date_joined')
+    print('hhiiiiii')
+    print(users)
     return render(request, 'admin_panel/users.html', {'users': users})
 
+@user_passes_test(is_admin)
+def admin_user_details(request, user_id):
+    print(user)
+    user = get_object_or_404(User, pk=user_id)
+    # Fetch all loans for this user
+    user_loans = LoanRequest.objects.filter(user=user).order_by('-application_date')
+    print('hiii')
+    print(user_loans)
+    context = {
+        'user': user,
+        'user_loans': user_loans,
+    }
+    return render(request, 'admin_panel/user_details.html', context)
 
 @user_passes_test(is_admin)
 def admin_user_detail(request, user_id):
@@ -272,7 +328,7 @@ def register_view(request):
 
 @user_passes_test(is_admin)
 def loan_list(request):
-    loans = LoanRequest.objects.select_related('user').order_by('-created_at')
+    loans = LoanRequest.objects.select_related('user').order_by('-application_date')
     return render(request, 'admin_panel/loans.html', {'loans': loans})
 
 
@@ -281,6 +337,10 @@ def loan_detail(request, loan_id):
     loan = get_object_or_404(LoanRequest, id=loan_id)
     return render(request, 'admin_panel/loan_details.html', {'loan': loan})
 
+@user_passes_test(is_admin)
+def user_management(request):
+    users = User.objects.filter(is_staff=False).order_by("-date_joined")
+    return render(request, "admin_panel/user_management.html", {"users": users})
 
 @user_passes_test(is_admin)
 def approve_loan(request, loan_id):
@@ -299,8 +359,15 @@ def reject_loan(request, loan_id):
 
 
 @user_passes_test(is_admin)
+def pending_loan(request, loan_id):
+    loan = get_object_or_404(LoanRequest, id=loan_id)
+    loan.status = 'Pending'
+    loan.save()
+    return redirect('loan_list')
+
+@user_passes_test(is_admin)
 def approved_loans(request):
-    loans = LoanRequest.objects.filter(status='Approved').select_related('user').order_by('-created_at')
+    loans = LoanRequest.objects.filter(status='Approved').select_related('user').order_by('-application_date')
     return render(request, 'admin_panel/loans_approved.html', {'loans': loans})
 
 
@@ -314,13 +381,13 @@ def logout_view(request):
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
-@login_required
-@user_passes_test(is_admin)
-def loan_detail(request, loan_id):
-    print(loan_id)
-    loan = get_object_or_404(LoanRequest, id=loan_id)
-    print(loan)
-    return render(request, 'admin_panel/detail.html', {'loan': loan})
+# @login_required
+# @user_passes_test(is_admin)
+# def loan_detail(request, loan_id):
+#     print(loan_id)
+#     loan = get_object_or_404(LoanRequest, id=loan_id)
+#     print(loan)
+#     return render(request, 'admin_panel/detail.html', {'loan': loan})
 
 @login_required
 @user_passes_test(is_admin)

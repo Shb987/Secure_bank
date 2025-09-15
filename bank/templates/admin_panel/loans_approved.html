@@ -1,5 +1,5 @@
 <!-- templates/admin_panel/loans_approved.html -->
-{% extends "base.html" %}
+{% extends "admin_panel/base.html" %}
 
 {% block title %}Approved Loans | SecureBank Admin{% endblock %}
 
@@ -11,26 +11,33 @@
     {% if loans %}
       <div class="overflow-x-auto">
         <table class="min-w-full bg-white rounded-xl shadow-sm border border-gray-200">
-          <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
-            <tr>
-              <th class="px-6 py-4">Loan ID</th>
-              <th class="px-6 py-4">User</th>
-              <th class="px-6 py-4">Amount</th>
-              <th class="px-6 py-4">Approved On</th>
-              <th class="px-6 py-4">Reason</th>
+        <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
+          <tr>
+            <th class="px-6 py-4">Loan ID</th>
+            <th class="px-6 py-4">User</th>
+            <th class="px-6 py-4">Amount</th>
+            <th class="px-6 py-4">Approved On</th>
+            <th class="px-6 py-4">Reason</th>
+            <th class="px-6 py-4">Actions</th>   <!-- 👈 Added -->
+          </tr>
+        </thead>
+        <tbody class="text-sm text-gray-800 divide-y divide-gray-100">
+          {% for loan in loans %}
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4 font-medium">#{{ loan.id }}</td>
+              <td class="px-6 py-4">{{ loan.user.get_full_name }}</td>
+              <td class="px-6 py-4">${{ loan.amount }}</td>
+              <td class="px-6 py-4">{{ loan.application_date|date:"M d, Y" }}</td>
+              <td class="px-6 py-4">{{ loan.purpose|truncatechars:50 }}</td>
+              <td class="px-6 py-4">
+                <a href="{% url 'loan_details' loan.id %}" 
+                  class="text-blue-600 hover:underline text-sm font-medium">
+                  View
+                </a>
+              </td>
             </tr>
-          </thead>
-          <tbody class="text-sm text-gray-800 divide-y divide-gray-100">
-            {% for loan in loans %}
-              <tr class="hover:bg-gray-50 transition-colors">
-                <td class="px-6 py-4 font-medium">#{{ loan.id }}</td>
-                <td class="px-6 py-4">{{ loan.user.get_full_name }}</td>
-                <td class="px-6 py-4">${{ loan.amount }}</td>
-                <td class="px-6 py-4">{{ loan.created_at|date:"M d, Y" }}</td>
-                <td class="px-6 py-4">{{ loan.reason|truncatechars:50 }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
+          {% endfor %}
+        </tbody>
         </table>
       </div>
     {% else %}

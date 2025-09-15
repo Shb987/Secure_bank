@@ -34,7 +34,7 @@ class LoanRequest(models.Model):
     loan_type = models.CharField(max_length=20, choices=LOAN_TYPES,default='auto')
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     purpose = models.TextField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     application_date = models.DateTimeField(auto_now_add=True)
     approved_date = models.DateTimeField(null=True, blank=True)
     term_months = models.IntegerField(default=12)

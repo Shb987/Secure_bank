@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SecureBank - Admin Dashboard{% endblock %}</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+
+    <!-- Remix Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+
+    <style>
+        .bg-primary {
+            --tw-bg-opacity: 1;
+            background-color: rgb(30 64 175 / var(--tw-bg-opacity, 1)); /* blue-800 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- Admin Dashboard Container -->
+<div id="adminDashboard" class="fixed inset-0 bg-white z-50">
+    <div class="flex h-full">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-gray-900 text-white flex flex-col">
+            <div class="p-6 border-b border-gray-800">
+                <div class="text-2xl font-bold text-blue-400 tracking-wide">SecureBank</div>
+                <p class="text-gray-400 text-sm mt-1">Admin Portal</p>
+            </div>
+            
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="{% url 'admin_dashboard' %}" 
+                   class="flex items-center px-4 py-3 rounded-lg transition 
+                          {% if request.resolver_match.url_name == 'admin_dashboard' %}bg-primary text-white shadow-md
+                          {% else %}text-gray-300 hover:bg-gray-800{% endif %}">
+                    <i class="ri-dashboard-line mr-3"></i> Dashboard
+                </a>
+
+                <a href="{% url 'admin_users' %}" 
+                   class="flex items-center px-4 py-3 rounded-lg transition 
+                          {% if request.resolver_match.url_name == 'admin_users' %}bg-primary text-white shadow-md
+                          {% else %}text-gray-300 hover:bg-gray-800{% endif %}">
+                    <i class="ri-user-settings-line mr-3"></i> User Management
+                </a>
+
+                <a href="{% url 'loan_list' %}" 
+                   class="flex items-center px-4 py-3 rounded-lg transition 
+                          {% if request.resolver_match.url_name == 'loan_list' %}bg-primary text-white shadow-md
+                          {% else %}text-gray-300 hover:bg-gray-800{% endif %}">
+                    <i class="ri-file-list-line mr-3"></i> Loan Applications
+                </a>
+
+                <a href="{% url 'loans_approved' %}" 
+                   class="flex items-center px-4 py-3 rounded-lg transition 
+                          {% if request.resolver_match.url_name == 'loans_approved' %}bg-primary text-white shadow-md
+                          {% else %}text-gray-300 hover:bg-gray-800{% endif %}">
+                    <i class="ri-check-double-line mr-3"></i> Approved Loans
+                </a>
+            </nav>
+
+            <!-- Logout at bottom -->
+            <div class="p-4 border-t border-gray-800">
+                <a href="{% url 'logout' %}" 
+                   class="flex items-center px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 transition">
+                    <i class="ri-logout-box-line mr-3"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col">
+            
+            <!-- Header -->
+            <header class="bg-white border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <h1 class="text-2xl font-bold text-gray-900">{% block page_title %}Admin Dashboard{% endblock %}</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                                <i class="ri-admin-line text-white text-sm"></i>
+                            </div>
+                            <span class="font-medium text-gray-700"> {{ request.user.username }}</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Block -->
+            <main class="flex-1 p-6 overflow-auto">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
