@@ -6,7 +6,8 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from .models import LoanRequest
 from .forms import LoanRequestForm, CustomUserCreationForm
-
+from django.views.decorators.cache import never_cache
+from django.contrib.auth.decorators import login_required
 import joblib
 import numpy as np
 
@@ -20,6 +21,7 @@ def is_admin(user):
 
 # -------------------- USER VIEWS --------------------
 def login_view(request):
+    error = None
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -28,11 +30,13 @@ def login_view(request):
             login(request, user)
             return redirect('admin_dashboard' if user.is_staff else 'user_dashboard')
         else:
-            return render(request, 'base2.html', {'error': 'Invalid credentials'})
-    return render(request, 'base2.html')
+            error = 'Invalid credentials'
+    return render(request, 'base2.html', {'error': error})
 
 
-@login_required
+
+@login_required(login_url='login')
+@never_cache
 def user_dashboard(request):
     loans = LoanRequest.objects.filter(user=request.user)
     context = {
@@ -46,6 +50,7 @@ def user_dashboard(request):
 
 
 @login_required
+@never_cache
 def loan_applications(request):
     loans = LoanRequest.objects.filter(user=request.user)
     return render(request, "user/loan_applications.html", {
@@ -121,6 +126,7 @@ def loan_application_submit(request):
 
 
 @login_required
+@never_cache
 def apply_loan(request):
     if request.method == 'POST':
         form = LoanRequestForm(request.POST)
@@ -135,6 +141,7 @@ def apply_loan(request):
 
 
 @login_required
+@never_cache
 def user_loan_list(request):
     loans = LoanRequest.objects.filter(user=request.user).order_by('-application_date')
     return render(request, 'user/loan_list.html', {
@@ -145,6 +152,7 @@ def user_loan_list(request):
 
 
 @login_required
+@never_cache
 def user_profile(request):
     user = request.user
 
@@ -196,6 +204,7 @@ def register_view(request):
 
 # -------------------- ADMIN VIEWS --------------------
 @user_passes_test(is_admin)
+@never_cache
 def admin_dashboard(request):
     context = {
         'total_users': User.objects.filter(is_staff=False).count(),
@@ -210,6 +219,7 @@ def admin_dashboard(request):
 
 
 @user_passes_test(is_admin)
+@never_cache
 def admin_user_list(request):
     users = User.objects.filter(is_staff=False).order_by('-date_joined')
     return render(request, 'admin_panel/users.html', {'users': users})

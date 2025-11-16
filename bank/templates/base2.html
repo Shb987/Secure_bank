@@ -346,9 +346,9 @@ Learn More
     </form>
 
     <div class="mt-6 flex flex-col items-center space-y-3 text-sm text-center">
-      <div id="forgotPasswordLink">
+      <!-- <div id="forgotPasswordLink">
         <a href="#" class="text-primary hover:underline">Forgot password?</a>
-      </div>
+      </div> -->
       <div id="registerLink" class="text-gray-500">
         Not registered? <a href="{% url 'register' %}" class="text-primary hover:underline">Create an account</a>
       </div>
@@ -570,6 +570,15 @@ Learn More
     });
   </script>
 </body>
+{% if error %}
+<script>
+  // Auto-open login modal if there's an error
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("loginModal").classList.remove("hidden");
+    showUserLogin(); // ensures correct tab is active
+  });
+</script>
+{% endif %}
 </html>``
 
 <!-- <script>

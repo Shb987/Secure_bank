@@ -19,7 +19,7 @@ urlpatterns = [
     # Admin Panel
     path('admin-panel/', views.admin_dashboard, name='admin_dashboard'),
     path('admin-panel/users/', views.admin_user_list, name='admin_users'),  # or user_management
-    path('admin-panel/users/<int:user_id>/', views.admin_user_detail, name='admin_user_detail'),
+    path('admin-panel/users/<int:user_id>/', views.admin_user_details, name='admin_user_detail'),
     path('admin-panel/users/<int:user_id>/delete/', views.admin_user_delete, name='admin_user_delete'),
     path('admin-panel/users/<int:user_id>/', views.admin_user_details, name='admin_user_details'),
 
