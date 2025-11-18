@@ -6,14 +6,28 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    address = models.TextField()
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    zip_code = models.CharField(max_length=20)
-    phone = models.CharField(max_length=20)
-    credit_score = models.IntegerField(default=650)
-    created_at = models.DateTimeField(auto_now_add=True)
 
+    # Additional details
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
+
+    # Bank related fields
+    account_number = models.CharField(max_length=20, blank=True, null=True)
+    ifsc_code = models.CharField(max_length=15, blank=True, null=True)
+    branch_name = models.CharField(max_length=100, blank=True, null=True)
+
+    # Optional details
+    dob = models.DateField(blank=True, null=True)
+    gender = models.CharField(
+        max_length=10,
+        choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')],
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return self.user.username
 
 class LoanRequest(models.Model):
     LOAN_TYPES = (

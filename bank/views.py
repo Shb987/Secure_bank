@@ -11,6 +11,9 @@ from django.contrib.auth.decorators import login_required
 import joblib
 import numpy as np
 
+
+
+
 # -------------------- ML MODEL LOADING --------------------
 Rf_model = joblib.load('ml_models/rf_model.pkl')
 scaler_loaded = joblib.load("ml_models/minmax_scaler.pkl")
@@ -150,18 +153,60 @@ def user_loan_list(request):
         "active": "loan_list"
     })
 
+import random
+
+BANK_BRANCHES = [
+    ("Main Branch", "SRBK000001"),
+    ("City Center Branch", "SRBK000002"),
+    ("Tech Park Branch", "SRBK000003"),
+]
+
+from .models import UserProfile
 
 @login_required
 @never_cache
 def user_profile(request):
     user = request.user
+    profile, created = UserProfile.objects.get_or_create(user=user)
+
+    # 🎯 Auto-create account info only when profile is first created
+    if created:
+        # Generate random 12-digit account number
+        profile.account_number = str(random.randint(10**11, (10**12)-1))
+
+        # Pick a random branch + IFSC
+        branch_name, ifsc_code = random.choice(BANK_BRANCHES)
+        profile.branch_name = branch_name
+        profile.ifsc_code = ifsc_code
+
+        profile.save()
 
     if request.method == 'POST':
         if 'update_profile' in request.POST:
-            user.first_name = request.POST.get('first_name', user.first_name)
-            user.last_name = request.POST.get('last_name', user.last_name)
-            user.email = request.POST.get('email', user.email)
+
+            # Update user model
+            user.first_name = request.POST.get('first_name')
+            user.last_name = request.POST.get('last_name')
+            user.email = request.POST.get('email')
             user.save()
+
+            # Update profile details
+            profile.phone = request.POST.get('phone')
+            profile.address = request.POST.get('address')
+            profile.gender = request.POST.get('gender')
+            # FIX: handle empty DOB
+            dob_value = request.POST.get('dob')
+            profile.dob = dob_value if dob_value else None
+            # Bank details should NOT be updated by user
+            # We keep them generated only once
+            profile.account_number = profile.account_number  # (not editable)
+            profile.ifsc_code = profile.ifsc_code
+            profile.branch_name = profile.branch_name
+            # Profile Photo
+            if request.FILES.get('photo'):
+                profile.photo = request.FILES['photo']
+
+            profile.save()
             messages.success(request, "Profile updated successfully!")
 
         elif 'change_password' in request.POST:
@@ -181,10 +226,10 @@ def user_profile(request):
 
     return render(request, "user/user_profile.html", {
         "user": user,
+        "profile": profile,
         "active": "profile",
         "full_name": request.user.get_full_name() or request.user.username
     })
-
 
 def logout_view(request):
     logout(request)
@@ -228,8 +273,17 @@ def admin_user_list(request):
 @user_passes_test(is_admin)
 def admin_user_details(request, user_id):
     user = get_object_or_404(User, id=user_id)
+
+    # Get or create profile
+    profile, created = UserProfile.objects.get_or_create(user=user)
+
     user_loans = LoanRequest.objects.filter(user=user).order_by('-application_date')
-    return render(request, 'admin_panel/user_details.html', {'user': user, 'user_loans': user_loans})
+
+    return render(request, 'admin_panel/user_details.html', {
+        'user': user,
+        'profile': profile,
+        'user_loans': user_loans
+    })
 
 
 @user_passes_test(is_admin)

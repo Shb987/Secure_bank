@@ -1,4 +1,3 @@
-<!-- templates/login.html -->
 {% extends "base.html" %}
 
 {% block title %}Login | SecureBank{% endblock %}
@@ -6,21 +5,38 @@
 {% block content %}
 <section class="min-h-screen flex items-center justify-center bg-gray-100">
   <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-8">
+
     <div class="text-center mb-8">
       <div class="font-['Pacifico'] text-3xl text-primary mb-2">SecureBank</div>
       <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
       <p class="text-gray-600">Sign in to your account</p>
     </div>
 
+    <!-- ✅ Message Alerts Here -->
+    {% if messages %}
+      <div class="space-y-3 mb-6">
+        {% for message in messages %}
+          <div class="p-3 rounded-lg text-white text-sm
+                      {% if message.tags == 'success' %} bg-green-600
+                      {% elif message.tags == 'error' %} bg-red-600
+                      {% elif message.tags == 'warning' %} bg-yellow-600
+                      {% else %} bg-blue-600 {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    <!-- ✅ End Messages -->
+
     <div class="flex justify-center mb-6 space-x-4">
-    <a href="?type=user"    
-        class="{% if request.GET.type|default:'user' == 'user' %}bg-primary text-white{% else %}text-primary{% endif %} px-4 py-2 rounded-lg">
-        User Login
-    </a>
-    <a href="?type=admin" 
-        class="{% if request.GET.type|default:'user' == 'admin' %}bg-primary text-white{% else %}text-primary{% endif %} px-4 py-2 rounded-lg">
-        Admin Login
-    </a>
+      <a href="?type=user"    
+          class="{% if request.GET.type|default:'user' == 'user' %}bg-primary text-white{% else %}text-primary{% endif %} px-4 py-2 rounded-lg">
+          User Login
+      </a>
+      <a href="?type=admin" 
+          class="{% if request.GET.type|default:'user' == 'admin' %}bg-primary text-white{% else %}text-primary{% endif %} px-4 py-2 rounded-lg">
+          Admin Login
+      </a>
     </div>
 
     <form method="post">
@@ -50,6 +66,7 @@
     <div class="mt-6 text-sm text-center text-gray-500">
       <a href="#" class="text-primary hover:underline">Forgot password?</a>
     </div>
+
   </div>
 </section>
 {% endblock %}

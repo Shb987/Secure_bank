@@ -302,6 +302,19 @@ Learn More
     <div class="text-center mb-8">
       <div class="font-['Pacifico'] text-3xl text-primary mb-2">SecureBank</div>
       <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
+      {% if messages %}
+      <div class="space-y-3 mb-4">
+        {% for message in messages %}
+          <div class="p-3 rounded-lg text-white text-sm
+                      {% if message.tags == 'success' %} bg-green-600
+                      {% elif message.tags == 'error' %} bg-red-600
+                      {% elif message.tags == 'warning' %} bg-yellow-600
+                      {% else %} bg-blue-600 {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
       {% if error %}
         <div class="text-red-500 mb-4">{{ error }}</div>
       {% endif %}
@@ -570,6 +583,7 @@ Learn More
     });
   </script>
 </body>
+
 {% if error %}
 <script>
   // Auto-open login modal if there's an error

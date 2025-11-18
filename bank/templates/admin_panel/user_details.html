@@ -1,0 +1,156 @@
+{% extends "admin_panel/base.html" %}
+
+{% block title %}User Details | SecureBank Admin{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-50">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Back Button -->
+    <div class="flex items-center justify-between mb-8">
+      <a href="{% url 'admin_users' %}" class="flex items-center text-gray-500 hover:text-gray-700">
+        <i class="ri-arrow-left-line text-lg mr-2"></i>
+        Back to Users
+      </a>
+
+      <div class="flex items-center gap-2">
+        {% if user.is_active %}
+          <span class="px-3 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">Active</span>
+        {% else %}
+          <span class="px-3 py-1 text-xs font-semibold bg-red-100 text-red-800 rounded-full">Inactive</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- User Profile Card -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+
+      <div class="flex items-center gap-6">
+        {% if profile.photo %}
+          <img src="{{ profile.photo.url }}" class="w-20 h-20 rounded-full object-cover shadow">
+        {% else %}
+          <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center shadow">
+            <i class="ri-user-fill text-white text-3xl"></i>
+          </div>
+        {% endif %}
+        
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">
+            {{ user.first_name }}
+          </h1>
+          <p class="text-gray-600 text-sm">User ID: #{{ user.id }}</p>
+        </div>
+      </div>
+
+      <!-- Grid Info -->
+      <div class="grid md:grid-cols-2 gap-6 mt-8">
+
+        <!-- Left Column -->
+        <div class="space-y-4">
+          <div>
+            <p class="text-sm text-gray-600">Email</p>
+            <p class="font-medium text-gray-900">{{ user.email }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-600">Phone</p>
+            <p class="font-medium text-gray-900">{{ profile.phone|default:"-" }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-600">Address</p>
+            <p class="font-medium text-gray-900">{{ profile.address|default:"-" }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-600">Gender</p>
+            <p class="font-medium text-gray-900">{{ profile.gender|default:"-" }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-600">Date of Birth</p>
+            <p class="font-medium text-gray-900">
+              {% if profile.dob %}{{ profile.dob|date:"M d, Y" }}{% else %}-{% endif %}
+            </p>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="space-y-4">
+          <div>
+            <p class="text-sm text-gray-600">Date Joined</p>
+            <p class="font-medium text-gray-900">{{ user.date_joined|date:"M d, Y H:i" }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-600">Account Number</p>
+            <p class="font-medium text-gray-900">{{ profile.account_number|default:"-" }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-600">IFSC Code</p>
+            <p class="font-medium text-gray-900">{{ profile.ifsc_code|default:"-" }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-600">Branch Name</p>
+            <p class="font-medium text-gray-900">{{ profile.branch_name|default:"-" }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-600">Staff Account</p>
+            <p class="font-medium text-gray-900">{{ user.is_staff }}</p>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-600">Superuser</p>
+            <p class="font-medium text-gray-900">{{ user.is_superuser }}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Loan History -->
+    <div class="mt-10 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <h2 class="text-xl font-bold text-gray-900 mb-4">Loan History</h2>
+
+      {% if user_loans %}
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-100 text-left text-sm text-gray-600">
+              <th class="p-3">Loan Type</th>
+              <th class="p-3">Amount</th>
+              <th class="p-3">Status</th>
+              <th class="p-3">Applied</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for loan in user_loans %}
+              <tr class="border-b">
+                <td class="p-3">{{ loan.get_loan_type_display }}</td>
+                <td class="p-3">₹{{ loan.amount }}</td>
+                <td class="p-3">{{ loan.status }}</td>
+                <td class="p-3">{{ loan.application_date|date:"M d, Y" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="text-gray-600">No loans found.</p>
+      {% endif %}
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-8 flex gap-4">
+      <form method="post" action="{% url 'admin_user_delete' user.id %}">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg shadow hover:bg-red-700">
+          <i class="ri-delete-bin-line mr-2"></i> Delete User
+        </button>
+      </form>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

@@ -1,8 +1,13 @@
 from django import forms
-from .models import LoanRequest,UserProfile
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from .models import LoanRequest, UserProfile
+
+
+# ------------------------------
+# Loan Request Form
+# ------------------------------
 class LoanRequestForm(forms.ModelForm):
     class Meta:
         model = LoanRequest
@@ -11,18 +16,27 @@ class LoanRequestForm(forms.ModelForm):
             'purpose': forms.Textarea(attrs={'rows': 3}),
         }
 
+
+# ------------------------------
+# User Profile Form
+# ------------------------------
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['address', 'city', 'state', 'zip_code', 'phone']
+        fields = ['address', 'phone', 'photo']
+        widgets = {
+            'address': forms.TextInput(attrs={
+                "class": "w-full px-3 py-2 border rounded"
+            }),
+            'phone': forms.TextInput(attrs={
+                "class": "w-full px-3 py-2 border rounded"
+            }),
+        }
 
 
-
-
-from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-
+# ------------------------------
+# Custom User Signup Form
+# ------------------------------
 class CustomUserCreationForm(UserCreationForm):
     full_name = forms.CharField(
         max_length=150,
@@ -33,6 +47,7 @@ class CustomUserCreationForm(UserCreationForm):
             "placeholder": "John Doe"
         })
     )
+
     email = forms.EmailField(
         required=True,
         widget=forms.EmailInput(attrs={
@@ -41,19 +56,19 @@ class CustomUserCreationForm(UserCreationForm):
         })
     )
 
-
     password1 = forms.CharField(
         label="Password",
         widget=forms.PasswordInput(attrs={
             "class": "w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary",
-            "placeholder": ","
+            "placeholder": ""
         })
     )
+
     password2 = forms.CharField(
         label="Confirm Password",
         widget=forms.PasswordInput(attrs={
             "class": "w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary",
-            "placeholder": " "
+            "placeholder": ""
         })
     )
 
